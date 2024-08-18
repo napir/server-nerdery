@@ -1,0 +1,30 @@
+version: "3.3"
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - 3000:3000
+    volumes:
+      - /mnt/Denali/Media/~Server_Apps/homepage/config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+  
+  speedtest-tracker:
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    container_name: speedtest-tracker
+    network_mode: bridge
+    ports:
+      - 8080:80
+      - 8443:443
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - APP_URL=http://10.11.0.10
+      - APP_KEY=base64:7KE3HHOJ1PdR5GMNLASR72XkYlkLXHmP9vTz6TLngZc=
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - SPEEDTEST_SCHEDULE=0 */2 * * *
+    volumes:
+      - /mnt/Denali/Media/~Server_Apps/speedtest-tracker/config:/config
+    restart: unless-stopped
