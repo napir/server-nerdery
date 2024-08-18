@@ -1,0 +1,39 @@
+# plex compose CAO 7 Apr 24
+---
+version: "3.8"
+services:
+
+    plex:
+        image: lscr.io/linuxserver/plex:latest
+        container_name: plex
+        network_mode: host
+        devices:
+        - /dev/dri:/dev/dri
+        environment:
+        - PUID=1000
+        - PGID=1000
+        - VERSION=docker
+        - TZ=Etc/UTC
+        volumes:
+        - /media/plex:/config
+        - /mnt/Denali/Media:/media
+        - /mnt/Denali/Media/~Server_Apps/plex/transcode:/transcode
+        - /mnt/Denali/Media/~Server_Apps/plex/cache:/Library/Application Support/Plex Media Server/Cache
+        - /var/run/docker.sock:/var/run/docker.sock
+        restart: unless-stopped
+    
+    tautulli:
+        image: lscr.io/linuxserver/tautulli
+        container_name: tautulli
+        environment:
+         - PUID=1000
+         - PGID=1000
+         - TZ=Etc/UTC
+        volumes:
+         - /media/tautulli:/config
+         - /mnt/Denali/Media/~Server_Apps/tautulli/backups:/config/backups
+         - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+         - 8181:8181
+        restart: unless-stopped
+      
