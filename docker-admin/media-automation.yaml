@@ -1,0 +1,104 @@
+# media-automation compose CAO 11 Aug 24
+---
+version: "3.8"
+services:
+  nzbget:
+    container_name: nzbget
+    image: ghcr.io/hotio/nzbget
+    ports:
+      - "6789:6789"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Etc/UTC
+    volumes:
+      - /mnt/Denali/Media:/media
+      - nzbget:/config
+
+  radarr:
+    container_name: radarr
+    image: ghcr.io/hotio/radarr
+    ports:
+      - "7878:7878"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Etc/UTC
+    volumes:
+      - /mnt/Denali/Media:/media
+      - /mnt/Denali/Media/~Server_Apps/radarr/Backups:/config/Backups
+      - radarr:/config
+    
+  sonarr:
+    container_name: sonarr
+    image: ghcr.io/hotio/sonarr
+    ports:
+      - "8989:8989"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Etc/UTC
+    volumes:
+      - /mnt/Denali/Media:/media
+      - /mnt/Denali/Media/~Server_Apps/sonarr/Backups:/config/Backups
+      - sonarr:/config
+
+  prowlarr:
+    container_name: prowlarr
+    image: ghcr.io/hotio/prowlarr
+    ports:
+      - "9696:9696"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Etc/UTC
+    volumes:
+      - /mnt/Denali/Media/~Server_Apps/prowlarr/Backups:/config/Backups
+      - prowlarr:/config
+
+  bazarr:
+    container_name: bazarr
+    image: ghcr.io/hotio/bazarr
+    ports:
+      - "6767:6767"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Etc/UTC
+      - WEBUI_PORTS=6767/tcp,6767/udp
+    volumes:
+      - /mnt/Denali/Media:/media
+      - /mnt/Denali/Media/~Server_Apps/bazarr/Backups:/config/backup
+      - bazarr:/config
+
+  overseerr:
+    container_name: overseerr
+    image: ghcr.io/hotio/overseerr
+    ports:
+      - "5055:5055"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Etc/UTC
+    volumes:
+      - overseerr:/config
+
+volumes:
+  nzbget:
+    external: true
+  radarr:
+    external: true
+  sonarr:
+    external: true
+  prowlarr:
+    external: true
+  bazarr:
+    external: true
+  overseerr:
+    external: true
